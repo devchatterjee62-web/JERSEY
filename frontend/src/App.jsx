@@ -245,7 +245,7 @@ function AdminPage({ fetchAllData, products, categories, gallery, settings, page
 
   const uploadFileToServer = async (file) => {
     const formData = new FormData(); formData.append("file", file);
-    try { const res = await fetch('http://jersey-7jhu.onrender.com/api/upload/', { method: 'POST', body: formData }); return (await res.json()).url; } 
+    try { const res = await fetch('https://jersey-7jhu.onrender.com/api/upload/', { method: 'POST', body: formData }); return (await res.json()).url; } 
     catch (err) { alert("Upload Failed! Check backend connection."); return null; }
   };
 
@@ -256,22 +256,22 @@ function AdminPage({ fetchAllData, products, categories, gallery, settings, page
     if (!e.target.files[0]) return;
     const url = await uploadFileToServer(e.target.files[0]);
     if (url) {
-       await fetch('http://jersey-7jhu.onrender.com/api/gallery/', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ image_url: url }) });
+       await fetch('https://jersey-7jhu.onrender.com/api/gallery/', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ image_url: url }) });
        fetchAllData(); alert("Photo added to Slider!");
     }
   };
-  const handleDeleteGallery = async (id) => { await fetch(`http://jersey-7jhu.onrender.com/api/gallery/${id}`, { method: 'DELETE' }); fetchAllData(); };
+  const handleDeleteGallery = async (id) => { await fetch(`https://jersey-7jhu.onrender.com/api/gallery/${id}`, { method: 'DELETE' }); fetchAllData(); };
 
-  const handleAddCategory = async (e) => { e.preventDefault(); await fetch('http://jersey-7jhu.onrender.com/api/categories/', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: catName }) }); setCatName(''); fetchAllData(); };
-  const handleDeleteCategory = async (id) => { await fetch(`http://jersey-7jhu.onrender.com/api/categories/${id}`, { method: 'DELETE' }); fetchAllData(); };
+  const handleAddCategory = async (e) => { e.preventDefault(); await fetch('https://jersey-7jhu.onrender.com/api/categories/', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: catName }) }); setCatName(''); fetchAllData(); };
+  const handleDeleteCategory = async (id) => { await fetch(`https://jersey-7jhu.onrender.com/api/categories/${id}`, { method: 'DELETE' }); fetchAllData(); };
 
   const handleLogin = (e) => { e.preventDefault(); if (passwordInput === 'MINERVA') setIsAuthenticated(true); else { alert('DENIED.'); setPasswordInput(''); } };
-  const handleAddProduct = async (e) => { e.preventDefault(); await fetch('http://jersey-7jhu.onrender.com/api/products/', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(productData) }); setProductData({ ...productData, name: '', price: '', tag: '', image_url: ''}); fetchAllData(); alert("Asset added!"); };
-  const handleDeleteProduct = async (id) => { if(window.confirm("Delete permanently?")) { await fetch(`http://jersey-7jhu.onrender.com/api/products/${id}`, { method: 'DELETE' }); fetchAllData(); } };
-  const toggleVisibility = async (product) => { await fetch(`http://jersey-7jhu.onrender.com/api/products/${product.id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({...product, visibility: !product.visibility}) }); fetchAllData(); };
-  const handleCreatePage = async (e) => { e.preventDefault(); await fetch('http://jersey-7jhu.onrender.com/api/pages/', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...pageData, slug: pageData.slug.toLowerCase().replace(/ /g, '-') }) }); setPageData({ slug: '', title: '', banner_url: '', content: '' }); fetchAllData(); alert(`Page Created!`); };
-  const handleDeletePage = async (id) => { if(window.confirm("Delete Page?")) { await fetch(`http://jersey-7jhu.onrender.com/api/pages/${id}`, { method: 'DELETE' }); fetchAllData(); } };
-  const handleUpdateSettings = async (e) => { e.preventDefault(); await fetch('http://jersey-7jhu.onrender.com/api/settings/', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(cmsData) }); fetchAllData(); alert("Website content saved!"); };
+  const handleAddProduct = async (e) => { e.preventDefault(); await fetch('https://jersey-7jhu.onrender.com/api/products/', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(productData) }); setProductData({ ...productData, name: '', price: '', tag: '', image_url: ''}); fetchAllData(); alert("Asset added!"); };
+  const handleDeleteProduct = async (id) => { if(window.confirm("Delete permanently?")) { await fetch(`https://jersey-7jhu.onrender.com/api/products/${id}`, { method: 'DELETE' }); fetchAllData(); } };
+  const toggleVisibility = async (product) => { await fetch(`https://jersey-7jhu.onrender.com/api/products/${product.id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({...product, visibility: !product.visibility}) }); fetchAllData(); };
+  const handleCreatePage = async (e) => { e.preventDefault(); await fetch('https://jersey-7jhu.onrender.com/api/pages/', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...pageData, slug: pageData.slug.toLowerCase().replace(/ /g, '-') }) }); setPageData({ slug: '', title: '', banner_url: '', content: '' }); fetchAllData(); alert(`Page Created!`); };
+  const handleDeletePage = async (id) => { if(window.confirm("Delete Page?")) { await fetch(`https://jersey-7jhu.onrender.com/api/pages/${id}`, { method: 'DELETE' }); fetchAllData(); } };
+  const handleUpdateSettings = async (e) => { e.preventDefault(); await fetch('https://jersey-7jhu.onrender.com/api/settings/', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(cmsData) }); fetchAllData(); alert("Website content saved!"); };
 
   if (!isAuthenticated) return (
     <div className="min-h-screen bg-brand-black flex items-center justify-center p-6"><form onSubmit={handleLogin} className="bg-[#0A0A0A] p-12 border border-white/10 flex flex-col gap-6 text-center max-w-md w-full shadow-2xl"><h3 className="text-4xl font-anton text-brand-white uppercase">SYSTEM OVERRIDE</h3><input type="password" value={passwordInput} onChange={(e) => setPasswordInput(e.target.value)} placeholder="PASSCODE" className="bg-transparent border border-white/20 p-4 text-center text-white font-mono uppercase focus:border-brand-neon outline-none" /><button type="submit" className="bg-brand-neon text-black font-anton text-xl py-4 hover:bg-white transition-colors">ENTER COMMAND</button></form></div>
@@ -496,11 +496,11 @@ export default function App() {
 
   const fetchAllData = async () => {
     try {
-      const pRes = await fetch('http://jersey-7jhu.onrender.com/api/products/'); if (pRes.ok) setProducts(await pRes.json());
-      const cRes = await fetch('http://jersey-7jhu.onrender.com/api/categories/'); if (cRes.ok) setCategories(await cRes.json());
-      const gRes = await fetch('http://jersey-7jhu.onrender.com/api/gallery/'); if (gRes.ok) setGallery(await gRes.json());
-      const pgRes = await fetch('http://jersey-7jhu.onrender.com/api/pages/'); if (pgRes.ok) setPages(await pgRes.json());
-      const sRes = await fetch('http://jersey-7jhu.onrender.com/api/settings/'); if (sRes.ok) setSettings(await sRes.json());
+      const pRes = await fetch('https://jersey-7jhu.onrender.com/api/products/'); if (pRes.ok) setProducts(await pRes.json());
+      const cRes = await fetch('https://jersey-7jhu.onrender.com/api/categories/'); if (cRes.ok) setCategories(await cRes.json());
+      const gRes = await fetch('https://jersey-7jhu.onrender.com/api/gallery/'); if (gRes.ok) setGallery(await gRes.json());
+      const pgRes = await fetch('https://jersey-7jhu.onrender.com/api/pages/'); if (pgRes.ok) setPages(await pgRes.json());
+      const sRes = await fetch('https://jersey-7jhu.onrender.com/api/settings/'); if (sRes.ok) setSettings(await sRes.json());
     } catch (error) { console.error("Backend offline."); }
   };
   
