@@ -164,9 +164,13 @@ class SettingsResponse(SettingsBase):
 # ==========================================
 app = FastAPI(title="JERSEY PRO V5 API")
 
+# ⚡ FIXED CORS SETTINGS HERE
 app.add_middleware(
     CORSMiddleware, 
-    allow_origins=["*"], 
+    allow_origins=[
+        "http://localhost:5173",
+        "https://jersey-amber.vercel.app"
+    ], 
     allow_credentials=True, 
     allow_methods=["*"], 
     allow_headers=["*"]
@@ -181,13 +185,13 @@ def get_db():
     finally: 
         db.close()
 
-@app.post("/api/upload/")
+# ⚡ FIXED THE TRAILING SLASH HERE (Changed /api/upload/ to /api/upload)
+@app.post("/api/upload")
 async def upload_file(file: UploadFile = File(...)):
     file_location = f"uploads/{file.filename.replace(' ', '_')}"
     with open(file_location, "wb+") as file_object: 
         shutil.copyfileobj(file.file, file_object)
     
-    # ⚡ FIXED THIS LINE RIGHT HERE:
     return {"url": f"https://jersey-7jhu.onrender.com/{file_location}"}
 
 # -- Products & Inventory --
