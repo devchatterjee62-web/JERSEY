@@ -186,7 +186,7 @@ async def upload_file(file: UploadFile = File(...)):
     file_location = f"uploads/{file.filename.replace(' ', '_')}"
     with open(file_location, "wb+") as file_object: 
         shutil.copyfileobj(file.file, file_object)
-    return {"url": f"http://127.0.0.1:8000/{file_location}"}
+    return {"url": f"http://https://jersey-7jhu.onrender.com/{file_location}"}
 
 # -- Products & Inventory --
 @app.post("/api/products/", response_model=ProductResponse)
