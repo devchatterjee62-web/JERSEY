@@ -148,8 +148,8 @@ class SettingsBase(BaseModel):
     trust_desc_1: str
     trust_title_2: str
     trust_desc_2: str
-    about_img_1: str # ⚡ FIXED
-    about_img_2: str # ⚡ FIXED
+    about_img_1: str 
+    about_img_2: str 
     show_category_split: bool
     show_social_proof: bool
     show_trust_builder: bool
@@ -186,7 +186,9 @@ async def upload_file(file: UploadFile = File(...)):
     file_location = f"uploads/{file.filename.replace(' ', '_')}"
     with open(file_location, "wb+") as file_object: 
         shutil.copyfileobj(file.file, file_object)
-    return {"url": f"http://https://jersey-7jhu.onrender.com/{file_location}"}
+    
+    # ⚡ FIXED THIS LINE RIGHT HERE:
+    return {"url": f"https://jersey-7jhu.onrender.com/{file_location}"}
 
 # -- Products & Inventory --
 @app.post("/api/products/", response_model=ProductResponse)
@@ -303,4 +305,4 @@ def update_settings(ns: SettingsBase, db: Session = Depends(get_db)):
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="127.0.0.1", port=8000)
+    uvicorn.run(app, host="0.0.0.0", port=8000)
