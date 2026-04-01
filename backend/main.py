@@ -14,7 +14,7 @@ os.makedirs("uploads", exist_ok=True)
 # ==========================================
 # 1. DATABASE CONFIGURATION (V5 ENGINE)
 # ==========================================
-SQLALCHEMY_DATABASE_URL = "sqlite:///./jersey_v5_database.db"
+SQLALCHEMY_DATABASE_URL = "postgresql://neondb_owner:YOUR_REAL_PASSWORD_HERE@ep-ancient-field-a1cnzbu5-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require"
 engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False})
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
