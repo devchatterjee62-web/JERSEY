@@ -1,21 +1,31 @@
 import os
-import shutil
 from fastapi import FastAPI, Depends, HTTPException, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
 from sqlalchemy import create_engine, Column, Integer, String, Boolean, Text
 from sqlalchemy.orm import sessionmaker, declarative_base, Session
 from pydantic import BaseModel
 from typing import List
 
-# ⚡ CREATE UPLOADS FOLDER
-os.makedirs("uploads", exist_ok=True)
+# ⚡ IMMORTAL CLOUDINARY VAULT
+import cloudinary
+import cloudinary.uploader
 
 # ==========================================
-# 1. DATABASE CONFIGURATION (V5 ENGINE)
+# 🛑 CLOUDINARY SETUP (LIVE KEYS)
 # ==========================================
+cloudinary.config( 
+  cloud_name = "dcwaabbbk",  
+  api_key = "518419413736161",        
+  api_secret = "yo06AEQ2oW957ceFm_bQ0xYCfQQ",  
+  secure = True
+)
+
+# ==========================================
+# 1. DATABASE CONFIGURATION (PERMANENT NEON POSTGRES)
+# ==========================================
+# ⚠️ MAKE SURE TO TYPE YOUR REAL NEON PASSWORD BELOW!
 SQLALCHEMY_DATABASE_URL = "postgresql://neondb_owner:YOUR_REAL_PASSWORD_HERE@ep-ancient-field-a1cnzbu5-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require"
-engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False})
+engine = create_engine(SQLALCHEMY_DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
@@ -73,11 +83,8 @@ class DBSettings(Base):
     trust_desc_1 = Column(String, default="Aerodynamic, sweat-wicking materials.")
     trust_title_2 = Column(String, default="Combat Durability")
     trust_desc_2 = Column(String, default="Reinforced stitching.")
-    
-    # ⚡ FIXED: ADDED THE MISSING ABOUT IMAGES BACK IN
     about_img_1 = Column(String, default="")
     about_img_2 = Column(String, default="")
-    
     show_category_split = Column(Boolean, default=True)
     show_social_proof = Column(Boolean, default=True)
     show_trust_builder = Column(Boolean, default=True)
@@ -164,7 +171,6 @@ class SettingsResponse(SettingsBase):
 # ==========================================
 app = FastAPI(title="JERSEY PRO V5 API")
 
-# ⚡ FIXED CORS SETTINGS HERE
 app.add_middleware(
     CORSMiddleware, 
     allow_origins=[
@@ -176,8 +182,6 @@ app.add_middleware(
     allow_headers=["*"]
 )
 
-app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
-
 def get_db():
     db = SessionLocal()
     try: 
@@ -185,14 +189,12 @@ def get_db():
     finally: 
         db.close()
 
-# ⚡ FIXED THE TRAILING SLASH HERE (Changed /api/upload/ to /api/upload)
+# ⚡ CLOUDINARY UPLOAD: SECURE & PERMANENT
 @app.post("/api/upload")
 async def upload_file(file: UploadFile = File(...)):
-    file_location = f"uploads/{file.filename.replace(' ', '_')}"
-    with open(file_location, "wb+") as file_object: 
-        shutil.copyfileobj(file.file, file_object)
-    
-    return {"url": f"https://jersey-7jhu.onrender.com/{file_location}"}
+    # Beams the file directly to your secure Cloudinary vault
+    result = cloudinary.uploader.upload(file.file, resource_type="auto")
+    return {"url": result["secure_url"]}
 
 # -- Products & Inventory --
 @app.post("/api/products/", response_model=ProductResponse)
